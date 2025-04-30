@@ -102,7 +102,7 @@ cache_file = "llm_cache.json"
 #     return response.content[1].text
 
 # # Use OpenAI o1
-def call_llm(prompt, use_cache: bool = True):    
+def call_llm(prompt, use_cache: bool = True):
     from openai import OpenAI
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
     r = client.chat.completions.create(
@@ -111,7 +111,7 @@ def call_llm(prompt, use_cache: bool = True):
         response_format={
             "type": "text"
         },
-        reasoning_effort="medium",
+        #reasoning_effort="medium",
         store=False
     )
     return r.choices[0].message.content
