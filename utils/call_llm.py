@@ -106,7 +106,7 @@ def call_llm(prompt, use_cache: bool = True):
     from openai import OpenAI
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
     r = client.chat.completions.create(
-        model="o3-mini",
+        model="gpt-4.1-mini",
         messages=[{"role": "user", "content": prompt}],
         response_format={
             "type": "text"
