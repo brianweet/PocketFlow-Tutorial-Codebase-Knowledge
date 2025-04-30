@@ -594,7 +594,7 @@ Instructions for the chapter (Generate content in {language.capitalize()} unless
 
 Now, directly provide a super beginner-friendly Markdown output (DON'T need ```markdown``` tags):
 """
-        chapter_content = call_llm(prompt)
+        chapter_content = "# Chapter {chapter_num}: {abstraction_name}\n\nfake-chapter details\n"  # Start with a heading
         # Basic validation/cleanup
         actual_heading = f"# Chapter {chapter_num}: {abstraction_name}" # Use potentially translated name
         if not chapter_content.strip().startswith(f"# Chapter {chapter_num}"):
