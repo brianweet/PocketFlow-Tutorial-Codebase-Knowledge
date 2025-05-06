@@ -102,19 +102,51 @@ cache_file = "llm_cache.json"
 #     return response.content[1].text
 
 # # Use OpenAI o1
+# def call_llm(prompt, use_cache: bool = True):
+#     from openai import OpenAI
+#     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
+#     r = client.chat.completions.create(
+#         model="gpt-4.1-mini",
+#         messages=[{"role": "user", "content": prompt}],
+#         response_format={
+#             "type": "text"
+#         },
+#         #reasoning_effort="medium",
+#         store=False
+#     )
+#     return r.choices[0].message.content
+
+# Use Github Models
 def call_llm(prompt, use_cache: bool = True):
-    from openai import OpenAI
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "your-api-key"))
-    r = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[{"role": "user", "content": prompt}],
-        response_format={
-            "type": "text"
-        },
-        #reasoning_effort="medium",
-        store=False
+    from azure.ai.inference import ChatCompletionsClient
+    from azure.ai.inference.models import SystemMessage, UserMessage
+    from azure.core.credentials import AzureKeyCredential
+
+    endpoint = "https://models.github.ai/inference"
+    model = os.environ.get("GITHUB_MODEL", "openai/o3-mini")
+    token =  os.environ.get("GITHUB_TOKEN", "your-api-key")
+
+    # Validate the token
+    if not token or token == "your-api-key":
+        raise ValueError("Please set the GITHUB_TOKEN environment variable to use the GitHub Models API.")
+
+    client = ChatCompletionsClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(token),
     )
-    return r.choices[0].message.content
+
+    response = client.complete(
+        messages=[
+            # SystemMessage(""),
+            {"role": "developer", "content": ""},
+            UserMessage(prompt)
+        ],
+        # temperature=1,
+        # top_p=1,
+        model=model
+    )
+
+    return response.choices[0].message.content
 
 if __name__ == "__main__":
     test_prompt = "Hello, how are you?"
