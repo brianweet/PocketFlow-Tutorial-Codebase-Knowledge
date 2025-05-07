@@ -116,7 +116,7 @@ cache_file = "llm_cache.json"
 #     )
 #     return r.choices[0].message.content
 
-# Use Github Models
+# Use Github Models - azure.ai
 def call_llm(prompt, use_cache: bool = True):
     from azure.ai.inference import ChatCompletionsClient
     from azure.ai.inference.models import SystemMessage, UserMessage
@@ -145,6 +145,44 @@ def call_llm(prompt, use_cache: bool = True):
         # top_p=1,
         model=model
     )
+
+    return response.choices[0].message.content
+
+# Use Github Models - openai
+def call_llm(prompt, use_cache: bool = True):
+    from openai import OpenAI
+
+    endpoint = "https://models.github.ai/inference"
+    model = os.environ.get("GITHUB_MODEL", "openai/o3-mini")
+    token =  os.environ.get("GITHUB_TOKEN", "your-api-key")
+
+    # Validate the token
+    if not token or token == "your-api-key":
+        raise ValueError("Please set the GITHUB_TOKEN environment variable to use the GitHub Models API.")
+    
+    logger.info(f"PROMPT: {prompt}")
+    logger.info(f"MODEL: {model}")
+
+    client = OpenAI(
+        base_url=endpoint,
+        api_key=token,
+    )
+
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "developer",
+                "content": "",
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model=model
+    )
+
+    print(response.choices[0].message.content)
 
     return response.choices[0].message.content
 
