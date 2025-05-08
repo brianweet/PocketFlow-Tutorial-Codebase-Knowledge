@@ -61,8 +61,8 @@ def call_llm(prompt: str, use_cache: bool = True) -> str:
     # )
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash-preview-04-17",
-        contents=[prompt],
+        model=os.getenv("GEMINI_MODEL", "gemini-2.5-pro-preview-05-06"),
+        contents=prompt,
         config=genai.types.GenerateContentConfig(
                 thinking_config=genai.types.ThinkingConfig(
                     thinking_budget=1024
